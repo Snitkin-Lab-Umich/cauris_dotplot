@@ -107,13 +107,13 @@ if (highlight_data != 'NA'){
 			hcontig2 = subjectContigData[hcontig]
 			linedata2[linedata2$subjectChr == hcontig2,]$xstart = hstart
 			linedata2[linedata2$subjectChr == hcontig2,]$xend = hend
-			gplot1 = gplot1 + geom_segment(data=linedata2,aes(x=xstart,xend=xend,y=ystart,yend=yend,color='red',linewidth=5),show.legend = F)
+			gplot1 = gplot1 + geom_segment(data=linedata2,aes(x=xstart,xend=xend,y=ystart,yend=yend,color='red',linewidth=3),alpha=0.7,show.legend = F)
 		}
 		if ((htype=='query') & (grepl(hname,query_contig_data)) & (hcontig %in% names(queryContigData))){
 			hcontig2 = queryContigData[hcontig]
 			linedata2[linedata2$queryChr == hcontig2,]$ystart = hstart
 			linedata2[linedata2$queryChr == hcontig2,]$yend = hend
-			gplot1 = gplot1 + geom_segment(data=linedata2,aes(x=xstart,xend=xend,y=ystart,yend=yend,color='red',linewidth=5),show.legend = F)
+			gplot1 = gplot1 + geom_segment(data=linedata2,aes(x=xstart,xend=xend,y=ystart,yend=yend,color='red',linewidth=3),alpha = 0.7,show.legend = F)
 		}
 	}
 }

@@ -8,7 +8,7 @@
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=5g
-#SBATCH --time=01:00:00
+#SBATCH --time=05:00:00
 
 module load Bioinformatics mummer/4.0.0rc1
 module load R/4.4.0
@@ -17,4 +17,40 @@ module load R/4.4.0
 # --subject reference/kpc_assemblies/MI_KPC_774_flye_medaka_polypolish.fasta \
 # --name kpc_v1 --highlight highlight_data_KPC.tsv
 
-python sloop.py
+#python sloop.py
+
+# align to clade 1 reference
+# python dotplot.py --query query/t40_illumina/ \
+# --subject reference/b8441/B8441.fasta \
+# --name ragtag_t40_illumina_v4
+
+# python dotplot.py --query query/t40_hybrid/ \
+# --subject reference/b8441/B8441.fasta \
+# --name funqcd_t40_hybrid_v4
+
+
+# align to clade 3 reference
+# python dotplot.py --query /scratch/esnitkin_root/esnitkin0/jjhale/ragtag/output/t40_isolates_clade3/ \
+# --subject query/t40_hybrid/UM_Caur_4.scaffolds.fa \
+# --name ragtag_t40_illumina_clade3_v5
+
+# python dotplot.py --query query/t40_hybrid/ \
+# --subject query/t40_hybrid/UM_Caur_4.scaffolds.fa \
+# --name funqcd_t40_hybrid_clade3_v5
+
+
+
+# align to clade 4 reference
+#python dotplot.py --query /scratch/esnitkin_root/esnitkin0/jjhale/ragtag/output/t40_isolates_clade4/ \
+#--subject query/t40_hybrid/UM_Caur_10.scaffolds.fa \
+#--name ragtag_t40_illumina_clade4_v6
+
+#python dotplot.py --query query/t40_hybrid/ \
+#--subject query/t40_hybrid/UM_Caur_10.scaffolds.fa \
+#--name funqcd_t40_hybrid_clade4_v6
+
+# ajay's samples
+python dotplot.py --query query/Ajay_tpn/ \
+--subject reference/b8441/B8441.fasta \
+--name tpn_dotplots_v3 --highlight highlight_data_tpn_NAT.tsv
+

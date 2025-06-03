@@ -24,6 +24,15 @@ def check_suffix(path,suffix_list = ['.fasta','.fa','.fna']):
     else:
         return(False)
 
+def suffix_trim(fname):
+    if fname.endswith('.fasta') or fname.endswith('.fa'):
+        return(fname.split('/')[-1].split('.fa')[0])
+    elif fname.endswith('.fna'):
+        return(fname.split('/')[-1].split('.fna')[0])
+    else:
+        print('Incorrect file name when generating contig data')
+        quit(1)
+
 def run_nucmer(query_list,subject,output_dir,debug):
     output_file_list = []
     subject_name = subject.split('/')[-1].split('.fa')[0]
@@ -158,7 +167,8 @@ def main():
         query_fasta_list = check_query(args.query)
         # determine contig lengths for the query and subject
         for fpath in query_fasta_list + [args.subject]:
-            fname = fpath.split('/')[-1].split('.fa')[0]
+            #fname = fpath.split('/')[-1].split('.fa')[0]
+            fname = suffix_trim(fpath)
             count_contig_len(fpath,contig_data_dir + fname + '_contig_data.csv')
         # run nucmer, aligning each query to the subject
         coord_file_list = run_nucmer(query_list=query_fasta_list, subject=args.subject, output_dir=nucmer_output_dir, debug=debug_log_file)
