@@ -3,14 +3,15 @@ library(ggplot2)
 
 args = commandArgs(trailingOnly=TRUE)
 
-if (length(args) != 5){
-	('Please provide exactly five arguments, in this order: [input_coord_file] [subject_contig_data] [query_contig_data] [highlight_data] [output_file]')
+if (length(args) != 6){
+	('Please provide exactly six arguments, in this order: [input_coord_file] [subject_contig_data] [query_contig_data] [highlight_data] [omit_unaligned] [output_file]')
 } else {
 	input_file = args[1]
 	subject_contig_data = args[2]
 	query_contig_data = args[3]
 	highlight_data = args[4]
-	output_file = args[5]
+	omit_unaligned = args[5]
+	output_file = args[6]
 }
 
 # read in coordinate data
@@ -78,12 +79,21 @@ ylabel2 = ylabel2[length(ylabel2)]
 
 
 # generate plot
-gplot1 = ggplot() + facet_grid(queryChr~subjectChr,scales = 'free',drop = F) + xlim(0,NA) + ylim(0,NA)+ coord_cartesian(clip = "off")  + ggplot2::theme_bw() +
-	geom_point(data=limitdata,aes(x=subjectChrSize,y=queryChrSize),color='white',size=0.01) +
-	geom_segment(data=plotdata, aes(x=subjectStart, xend=subjectEnd, y=queryStart, yend=queryEnd)) +  
-	theme(strip.text.x = element_text(size = 6),strip.text.y = element_text(size = 6),axis.text.x = element_text(angle = 90,vjust=0.5,hjust=1)) +
-	xlab(xlabel2) + ylab(ylabel2)
-
+if (omit_unaligned == 'TRUE'){
+	# subset limitdata to only include contigs that are present in plotdata
+	limitdata = limitdata[(limitdata$subjectChr %in% plotdata$subjectChr) & (limitdata$queryChr %in% plotdata$queryChr),]
+	gplot1 = ggplot() + facet_grid(queryChr~subjectChr,scales = 'free',drop = T) + xlim(0,NA) + ylim(0,NA)+ coord_cartesian(clip = "off")  + ggplot2::theme_bw() +
+		geom_point(data=limitdata,aes(x=subjectChrSize,y=queryChrSize),color='white',size=0.01) +
+		geom_segment(data=plotdata, aes(x=subjectStart, xend=subjectEnd, y=queryStart, yend=queryEnd)) +  
+		theme(strip.text.x = element_text(size = 6),strip.text.y = element_text(size = 6),axis.text.x = element_text(angle = 90,vjust=0.5,hjust=1)) +
+		xlab(xlabel2) + ylab(ylabel2)
+} else {
+	gplot1 = ggplot() + facet_grid(queryChr~subjectChr,scales = 'free',drop = F) + xlim(0,NA) + ylim(0,NA)+ coord_cartesian(clip = "off")  + ggplot2::theme_bw() +
+		geom_point(data=limitdata,aes(x=subjectChrSize,y=queryChrSize),color='white',size=0.01) +
+		geom_segment(data=plotdata, aes(x=subjectStart, xend=subjectEnd, y=queryStart, yend=queryEnd)) +  
+		theme(strip.text.x = element_text(size = 6),strip.text.y = element_text(size = 6),axis.text.x = element_text(angle = 90,vjust=0.5,hjust=1)) +
+		xlab(xlabel2) + ylab(ylabel2)
+}
 
 # make a default data frame that won't draw any lines
 linedata = limitdata

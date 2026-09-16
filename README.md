@@ -42,6 +42,10 @@ This will generate your plots in the results/ directory. An explanation of each 
 
 (Optional) Provide a path to an existing results/ directory. This will skip the Nucmer alignments, speeding up the script. This intended for cases where you want to remake plots from existing data. This won't work if the file names or structure of the results/ directory is changed. This option is mutually exclusive with providing your own query and subject.
 
+### --omit_unaligned
+
+(Optional) Include this flag if you want unaligned contigs to be excluded from the plot. Useful if you are using a subset of a genome as a reference.
+
 ## Output
 
 If the script ran successfully, a few different output directories will be generated:

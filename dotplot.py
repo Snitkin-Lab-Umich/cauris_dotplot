@@ -88,13 +88,13 @@ def get_nucmer_coord(nucmer_dir):
     return(output_file_list)
 
 
-def make_plots(nucmer_dir,nucmer_files,contig_data_dir,highlight_data,output_dir):
+def make_plots(nucmer_dir,nucmer_files,contig_data_dir,highlight_data,omit_unaligned,output_dir):
     for filename in nucmer_files:
         query_name,subject_name = filename.split('.coord')[0].split('_to_')
         query_contig_data = contig_data_dir + query_name + '_contig_data.csv'
         subject_contig_data = contig_data_dir + subject_name + '_contig_data.csv'
         output_file = output_dir + f'{query_name}_to_{subject_name}.pdf'
-        command = ['Rscript','make_plots.R',nucmer_dir + filename,subject_contig_data,query_contig_data,highlight_data,output_file]
+        command = ['Rscript','make_plots.R',nucmer_dir + filename,subject_contig_data,query_contig_data,highlight_data,omit_unaligned,output_file]
         subprocess.run(command)
 
 def main():
@@ -125,6 +125,10 @@ def main():
         Nucmer alignments and contig data present in the directory.''',
         default=None
         )
+    parser.add_argument(
+        '--omit_unaligned','-oa',action='store_true',help='''(Optional) Omit unaligned regions from the plot instead of including them as empty panels.''',
+        default=None
+        )
     args = parser.parse_args()
     # these statements don't cover all possbile inputs
     if (args.query is None or args.subject is None) and (args.alignments is None):
@@ -145,7 +149,7 @@ def main():
     contig_data_dir = f'{args.name}/contig_data/'
     plot_output_dir = f'{args.name}/plots/'
     debug_log_dir = f'{args.name}/'
-    debug_log_file = f'{args.name}/{args.name}_debug_log.txt'    
+    debug_log_file = f'{args.name}/{args.name}_debug_log.txt'
     # generate the directories
     dirlist = [debug_log_dir,contig_data_dir,nucmer_output_dir,plot_output_dir]
     if args.alignments is not None:
@@ -190,9 +194,13 @@ def main():
             print(f'Could not locate results directory at {args.alignments}')
             quit(1)
     # make plots using all current paths
+    if args.omit_unaligned:
+        omit_unaligned = 'TRUE'
+    else:
+        omit_unaligned = 'FALSE'
     make_plots(
         nucmer_dir=nucmer_output_dir,nucmer_files=coord_file_list,contig_data_dir=contig_data_dir,
-        highlight_data=args.highlight,output_dir=plot_output_dir)
+        highlight_data=args.highlight,omit_unaligned=omit_unaligned,output_dir=plot_output_dir)
     print(f'Finished making plots!')
     print(f'Location of plots: {plot_output_dir}')
     print(f'Location of Nucmer alignments: {nucmer_output_dir}')
